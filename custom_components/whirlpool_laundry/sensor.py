@@ -168,38 +168,45 @@ class MaytagSensor(Entity):
                 }
 
                 response = requests.get(new_url, data={}, headers=new_header)
-                _LOGGER.warn(response.status_code)
                 data = response.json()
                 self.attrib = data.get("attributes")
-                if data.get("attributes") is None:
-                    _LOGGER.warn("No attributes")
-                self._modelnumber = (
-                    data.get("attributes").get("ModelNumber").get("value")
-                )
-                self._status = (
-                    data.get("attributes")
-                    .get("Cavity_CycleStatusMachineState")
-                    .get("value")
-                )
-                self._timeremaining = (
-                    data.get("attributes")
-                    .get("Cavity_TimeStatusEstTimeRemaining")
-                    .get("value")
-                )
-                if int(self._status) == 7:
-                    self._endtime = datetime.now() + timedelta(
-                        seconds=int(self._timeremaining)
+                if data.get("attributes") is not None:
+                    self._modelnumber = (
+                        data.get("attributes").get("ModelNumber").get("value")
                     )
+                    self._status = (
+                        data.get("attributes")
+                        .get("Cavity_CycleStatusMachineState")
+                        .get("value")
+                    )
+                    self._timeremaining = (
+                        data.get("attributes")
+                        .get("Cavity_TimeStatusEstTimeRemaining")
+                        .get("value")
+                    )
+                    if int(self._status) == 7:
+                        self._endtime = datetime.now() + timedelta(
+                            seconds=int(self._timeremaining)
+                        )
+                    else:
+                        self._endtime = datetime.now()
+
+                    # status: [0=off, 1=on but not running, 7=running, 6=paused, 10=cycle complete]
+
+                    self._state = UNIT_STATES.get(self._status, self._status)
+                    if self._modelnumber[2] == "W":
+                        self._name = "Washer"
+                    elif self._modelnumber[2] == "D":
+                        self._name = "Dryer"
                 else:
-                    self._endtime = datetime.now()
-
-                # status: [0=off, 1=on but not running, 7=running, 6=paused, 10=cycle complete]
-
-                self._state = UNIT_STATES.get(self._status, self._status)
-                if self._modelnumber[2] == "W":
-                    self._name = "Washer"
-                elif self._modelnumber[2] == "D":
-                    self._name = "Dryer"
+                    _LOGGER.warn("No attributes")
+                    _LOGGER.error(data)
+                    self._status = "Data Update Failed"
+                    self._state = "Data Update Failed"
+                    self.attrib = {}
+                    self._reauthorize = True
+                    self._timeremaining = None
+                    self._endtime = None
 
             except requests.ConnectionError:
 
