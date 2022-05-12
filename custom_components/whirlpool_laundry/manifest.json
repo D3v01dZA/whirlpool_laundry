@@ -2,14 +2,14 @@
   "domain": "whirlpool_laundry",
   "name": "Whirlpool Laundry",
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/whirlpool_laundry",
+  "documentation": "https://github.com/D3v01dZA/whirlpool_laundry",
   "requirements": [],
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
   "dependencies": [],
   "codeowners": [
-    "@mkmer"
+    "@D3v01dZA"
   ],
   "version" : "0.0.1",
   "iot_class": "cloud_polling"
