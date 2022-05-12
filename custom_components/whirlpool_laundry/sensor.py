@@ -168,8 +168,11 @@ class MaytagSensor(Entity):
                 }
 
                 response = requests.get(new_url, data={}, headers=new_header)
+                _LOGGER.warn(response.status_code)
                 data = response.json()
                 self.attrib = data.get("attributes")
+                if data.get("attributes") is None:
+                    _LOGGER.warn("No attributes")
                 self._modelnumber = (
                     data.get("attributes").get("ModelNumber").get("value")
                 )
