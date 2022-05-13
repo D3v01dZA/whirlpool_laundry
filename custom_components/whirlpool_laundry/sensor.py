@@ -199,8 +199,7 @@ class MaytagSensor(Entity):
                     elif self._modelnumber[2] == "D":
                         self._name = "Dryer"
                 else:
-                    _LOGGER.warn("No attributes")
-                    _LOGGER.error(data)
+                    _LOGGER.warn(data)
                     self._status = "Data Update Failed"
                     self._state = "Data Update Failed"
                     self.attrib = {}
