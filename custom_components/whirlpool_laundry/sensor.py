@@ -198,6 +198,10 @@ class MaytagSensor(Entity):
                         self._name = "Washer"
                     elif self._modelnumber[2] == "D":
                         self._name = "Dryer"
+                elif data.get("error") is not None and data.get("error") is not "invalid_token":
+                    # Just reauthorize but don't change to failures
+                    _LOGGER.warn("Reauthorizing")
+                    self._reauthorize = True
                 else:
                     _LOGGER.warn(data)
                     self._status = "Data Update Failed"
