@@ -199,26 +199,15 @@ class MaytagSensor(Entity):
                     elif self._modelnumber[2] == "D":
                         self._name = "Dryer"
                 elif data.get("error") is not None and data.get("error") is "invalid_token":
-                    # Just reauthorize but don't change to failures
-                    _LOGGER.warn("Reauthorizing")
                     self._reauthorize = True
                 else:
-                    _LOGGER.warn(data)
-                    self._status = "Data Update Failed"
-                    self._state = "Data Update Failed"
-                    self.attrib = {}
                     self._reauthorize = True
-                    self._timeremaining = None
-                    self._endtime = None
 
             except requests.ConnectionError:
-
+                
                 self._status = "Data Update Failed"
                 self._state = "Data Update Failed"
-                self.attrib = {}
                 self._reauthorize = True
-                self._timeremaining = None
-                self._endtime = None
 
         else:  # No token... try again!
             self._reauthorize = True
@@ -227,8 +216,9 @@ class MaytagSensor(Entity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         attr = {}
-        for key, value in self.attrib.items():
-            attr[key] = value["value"]
+        if (self.attrib is not None):
+            for key, value in self.attrib.items():
+                attr[key] = value["value"]
         attr["end_time"] = self._endtime
         return attr
 
