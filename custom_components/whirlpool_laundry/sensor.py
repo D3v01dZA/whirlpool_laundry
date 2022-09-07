@@ -135,7 +135,7 @@ class MaytagSensor(Entity):
 
             response = requests.post(auth_url, data=auth_data, headers=auth_header)
             data = response.json()
-            _LOGGER.warn("Auth Response Headers: " + response.headers())
+            _LOGGER.warn("Auth Response Headers: " + response.headers)
             _LOGGER.warn("Auth Response: " + data)
 
             self._access_token = data.get("access_token")
@@ -171,7 +171,7 @@ class MaytagSensor(Entity):
 
                 response = requests.get(new_url, data={}, headers=new_header)
                 data = response.json()
-                _LOGGER.warn("Update Response Headers: " + response.headers())
+                _LOGGER.warn("Update Response Headers: " + response.headers)
                 _LOGGER.warn("Update Response: " + data)
                 self.attrib = data.get("attributes")
                 if data.get("attributes") is not None:
