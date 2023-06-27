@@ -45,7 +45,6 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         "password": password,
     }
 
-    # result = await hass.async_add_executor_job(hub.update)
     async with aiohttp.ClientSession() as session:
         async with session.post(
             auth_url, data=auth_data, headers=auth_header
@@ -56,8 +55,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
         session.close()
 
-    # Return info that you want to store in the config entry.
-    if "error" in data:  # we found and error in the connection
+    if "error" in data:
         if data["error"] == "invalid_request":
             raise InvalidAuth
 
@@ -67,7 +65,7 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for test."""
+    """Config flow to set up whirlpool laundry"""
 
     VERSION = 1
 
@@ -88,7 +86,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "cannot_connect"
         except InvalidAuth:
             errors["base"] = "invalid_auth"
-        except Exception:  # pylint: disable=broad-except
+        except Exception:
             _LOGGER.exception("Unexpected exception")
             errors["base"] = "unknown"
         else:
