@@ -220,9 +220,6 @@ class MaytagSensor(Entity):
     def extra_state_attributes(self):
         """Return the state attributes."""
         attr = {}
-        if (self.attrib is not None):
-            for key, value in self.attrib.items():
-                attr[key] = value["value"]
         attr["end_time"] = self._endtime
         return attr
 
